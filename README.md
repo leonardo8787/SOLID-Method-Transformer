@@ -1,6 +1,15 @@
 # SOLID-Method
 
-
+**FEM used in this work:**
+ - Local Binary Pattern (LBP)
+ - Edge Histogram (EH)
+ - Haralick (Hr)
+ - Zernike (Zr)
+ - Color Layout (CL)
+ - ScalableColor (SC)
+ - Color Structure (CS)
+ - Texture Spectrum (TS)
+ - Color Histogram(CH)
 
 |  |Atr 1|Atr 2|Atr 3|Atr 4|Atr 5|Atr 6|Atr 7|Atr 8|Atr 9|Atr 10|
 |--|   --|   --|   --|   --|   --|   --|   --|   --|   --|    --|
