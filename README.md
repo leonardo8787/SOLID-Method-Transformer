@@ -30,7 +30,7 @@
 |            | **Atr 11** | **Atr 12**| **Atr 13**| **Atr 14**|**Atr 15**| **Atr 16**|**Atr 17** |**Atr 18**|**Atr 19** | **Atr 20** | **Atr 21** |
 |            | TS     | TS     | LBP    | TS     | SC     | LBP    | CS     | SC     | TS     | TS     | TS     |
 |            | **Atr 22** | **Atr 23**|**Atr 24** |**Atr 25** |**Atr 26**| **Atr 27** | **Atr 28**|**Atr 29**| **Atr 30** | **Atr 31**|**Atr 32**|
-|            | **CL     | CL     | CL     | CL     | LBP    | CS     | CL     | CS     | CS     | CL     | SC     |
+|            | CL     | CL     | CL     | CL     | LBP    | CS     | CL     | CS     | CS     | CL     | SC     |
 |            | **Atr 33** |**Atr 34** |**Atr 35** | **Atr 36**|**Atr 37** |**Atr 38**|**Atr 39**|**Atr 40**| **Atr 41**| **Atr 42**| **Atr 43**|
 |            | TS     | TS     | SC     | CL     | CL     | CS     | TS     | CS     | CL     | LBP    | SC     |
 |            | **Atr 44** | **Atr 45**| **Atr 46**| **Atr 47** | **Atr 48**| **Atr 49**| **Atr 50**| **Atr 51**|        |        |        |
