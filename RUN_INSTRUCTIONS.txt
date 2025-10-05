@@ -1,0 +1,86 @@
+Instruções para rodar o projeto SOLID-Method-MIMIC
+===============================================
+
+1) Pré-requisitos
+------------------
+- Python 3.8+ instalado no sistema.
+- Git (opcional) para clonar o repositório.
+
+2) Criar e ativar ambiente virtual (venv)
+----------------------------------------
+Abra um terminal na raiz do repositório (onde estão os arquivos .py e os CSVs) e execute:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+3) Instalar dependências
+------------------------
+Com o venv ativado, instale os pacotes listados em `requirements.txt`:
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+4) Preparar e rodar o pipeline completo
+---------------------------------------
+Eu adicionei dois scripts auxiliares:
+
+- `run_solid_pipeline.py` — converte um CSV em `train_data.pkl` e executa apenas o pré-processamento (CorDiS.processingSOLID).
+- `run_full_pipeline.py`  — converte o CSV, executa o CorDiS (pré-processamento) e em seguida executa uma consulta SOLID (Similarity_Queries_Weight) e salva os vizinhos.
+
+Exemplo de execução (rodar a partir da raiz do repositório):
+
+```bash
+# apenas pré-processamento (gera pickles em ./work_mstspine/CorDis/)
+python3 run_solid_pipeline.py 1-DS-MSTSpine.csv ./work_mstspine euclidean pearson 0.8 5
+
+# pipeline completo (pré-processamento + uma consulta e salvamento em ./work_mstspine/results/)
+python3 run_full_pipeline.py 1-DS-MSTSpine.csv ./work_mstspine euclidean pearson 0.8 5 0 5 1
+```
+
+Argumentos (ordem):
+- csv-file: caminho para o CSV contendo os dados (cada célula pode ser uma lista ou string representando lista, p.ex. "[1,2,3]" ou "1,2,3").
+- output-dir: diretório onde salvar `train_data.pkl` e saídas (será criado se não existir).
+- distance: (opcional) `euclidean` | `manhattan` | `chebyshev` (padrão: euclidean).
+- correlation: (opcional) `pearson` | `spearman` (padrão: pearson).
+- threshold: (opcional) float para seleção de atributos compatíveis (padrão: 0.8).
+- max_K: (opcional) inteiro para gerar compatibilidades até esse K (padrão: 5).
+- obj_idx: (opcional, somente run_full_pipeline) índice da tupla usada como consulta (padrão: 0).
+- k_query: (opcional, somente run_full_pipeline) número de vizinhos retornados pela query (padrão: 5).
+- comp_k: (opcional, somente run_full_pipeline) qual arquivo de compatibilidades carregar (por ex., 1 corresponde a k=1) (padrão: 1).
+
+5) Saída gerada
+----------------
+- `<output-dir>/train_data.pkl` — arquivo gerado a partir do CSV.
+- `<output-dir>/CorDis/matrix_diameters.pkl` — diâmetros por atributo.
+- `<output-dir>/CorDis/matrix_<correlation>.pkl` — matriz de correlação (Pearson/Spearman).
+- `<output-dir>/CorDis/matrixCompatibility_<correlation>/matrix_CompatibleAtr_k_<k>_th_<threshold>.pkl` — arquivos de compatibilidade por k.
+- `<output-dir>/results/neighbors_<dataset>_obj<idx>_k<k>.csv` — resultados da query (IDs dos vizinhos mais próximos).
+
+6) Inspecionar arquivos pickle
+-------------------------------
+No Python:
+
+```python
+import pandas as pd
+p = pd.read_pickle('./work_mstspine/CorDis/matrix_pearson.pkl')
+print(p.head())
+```
+
+7) Observações e limitações
+---------------------------
+- O código original contém algumas limitações e bugs conhecidos (por exemplo, uso de `is` para comparar strings em alguns `main()`, suposições sobre o formato uniforme dos vetores por coluna, e passagens de floats para `n_neighbors` do KNNImputer). Eu evitei o uso dos `main()` problemáticos chamando funções internamente nos scripts de orquestração.
+- Caso os CSVs estejam em formatos não previstos (ex.: células com textos complexos), ajuste a função `parse_cell` nos scripts auxiliares `run_solid_pipeline.py` e `run_full_pipeline.py`.
+- Recomendo testar primeiro com um CSV pequeno (ou uma amostra) para validar o fluxo.
+
+8) Quer que eu execute aqui um exemplo com um dos CSVs? Responda qual (1-DS-MSTSpine.csv, 2-DS-HandPD.csv, 3-DS-LibraGestures.csv, 4-DS-Letters.csv) e eu executo o pipeline e mostro os arquivos gerados.
+
+Fim.
+
+
+=====================
+
+utilizando o bash -> ./run_pipeline.sh 1-DS-MSTSpine.csv ./work_mstspine euclidean pearson 0.8 5 0 5 1

@@ -36,23 +36,27 @@ def compare(item1, item2):
 def getDiametersDistances(matrixDistances):
     # Calcula o "diâmetro" (máximo) das distâncias armazenadas em cada célula de
     # `matrixDistances` e retorna um DataFrame com um valor por coluna (atributo).
-    # Cada célula de `matrixDistances` é esperada como uma lista de distâncias
-    # (entre o objeto corrente e os demais). O diâmetro por coluna é o maior
-    # valor máximo observado entre todas as listas daquela coluna.
-    # Entrada: DataFrame em que cada célula é uma lista/iterável de distâncias.
-    # Saída: DataFrame de uma linha contendo o diâmetro por coluna.
+    # Algumas células podem ser NaN ou float (não-iteráveis). Essa versão trata
+    # esses casos de forma robusta: tenta obter max(cell) quando possível e
+    # usa NaN caso contrário; depois calcula o máximo por coluna ignorando NaNs.
 
     diametersMatrix = pd.DataFrame(index=matrixDistances.index, columns=matrixDistances.columns)
     finalDiameters = pd.DataFrame(index=[0], columns=np.arange(0, len(matrixDistances.columns)))
-    
+
     for tup in range(len(matrixDistances)):
         for col in range(len(matrixDistances.columns)):
-            
-            diametersMatrix.iloc[tup,col] = max(matrixDistances.iloc[tup,col])
-            
+            cell = matrixDistances.iloc[tup, col]
+            try:
+                diam_val = max(cell)
+            except Exception:
+                diam_val = np.nan
+            diametersMatrix.iloc[tup, col] = diam_val
+
+    # Para cada coluna calcula o máximo ignorando NaNs
     for col in range(len(diametersMatrix.columns)):
-        finalDiameters.iloc[0,col] = max(diametersMatrix.iloc[:,col])
-                         
+        col_series = pd.to_numeric(diametersMatrix.iloc[:, col], errors='coerce')
+        finalDiameters.iloc[0, col] = col_series.max()
+
     return finalDiameters
 
 

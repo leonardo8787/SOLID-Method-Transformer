@@ -1,0 +1,11 @@
+pandas>=1.1.0
+numpy>=1.19.0
+scipy>=1.5.0
+scikit-learn>=0.24.0
+matplotlib>=3.0.0
+
+# Opcional, mas recomendado para reprodutibilidade
+python-dateutil
+pytz
+
+# Nota: se você usar um ambiente Python mais recente, versões mínimas podem ser ajustadas

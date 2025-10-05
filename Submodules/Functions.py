@@ -308,7 +308,8 @@ def Similarity_Queries_Weight(matrixAttributes, matrixComp, diameters, k, objQue
                 if( diameters.iloc[0,atr]  == 0):  diameters.iloc[0,atr] = 1
                 matrixResultSetLocal.loc[tup,atr] = dist/ diameters.iloc[0,atr]         
         
-        finalResultSetLocal += [matrixResultSetLocal.values]
+    # Armazena o vetor 1D de distâncias para esta coluna (flatten)
+    finalResultSetLocal += [matrixResultSetLocal.values.ravel()]
         
     ############################# Create Global ResultSet #############################
     
@@ -345,7 +346,8 @@ def Similarity_Queries(matrixAttributes, diameters, k, objQuery):
 
         else: atr+=1
         
-        finalResultSetLocal += [matrixResultSetLocal.values]        
+    # Armazena o vetor 1D de distâncias para esta coluna (flatten)
+    finalResultSetLocal += [matrixResultSetLocal.values.ravel()]        
    
     for i in range(len(finalResultSetLocal)):
         matrixResultSetGlobal.loc[:,i] = finalResultSetLocal[i] 
