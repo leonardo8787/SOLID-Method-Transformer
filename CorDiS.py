@@ -20,6 +20,9 @@ from  sklearn.preprocessing import normalize
 from ast import literal_eval
 
 def compare(item1, item2):
+    # Função utilitária de comparação entre dois valores.
+    # Retorna -1 se item1 < item2, 1 se item1 > item2 e 0 se iguais.
+    # Usada para ordenações compatíveis com cmp_to_key quando necessário.
     if item1 < item2:
         return -1
     elif item1 > item2:
@@ -31,7 +34,14 @@ def compare(item1, item2):
 
 
 def getDiametersDistances(matrixDistances):
-    
+    # Calcula o "diâmetro" (máximo) das distâncias armazenadas em cada célula de
+    # `matrixDistances` e retorna um DataFrame com um valor por coluna (atributo).
+    # Cada célula de `matrixDistances` é esperada como uma lista de distâncias
+    # (entre o objeto corrente e os demais). O diâmetro por coluna é o maior
+    # valor máximo observado entre todas as listas daquela coluna.
+    # Entrada: DataFrame em que cada célula é uma lista/iterável de distâncias.
+    # Saída: DataFrame de uma linha contendo o diâmetro por coluna.
+
     diametersMatrix = pd.DataFrame(index=matrixDistances.index, columns=matrixDistances.columns)
     finalDiameters = pd.DataFrame(index=[0], columns=np.arange(0, len(matrixDistances.columns)))
     
@@ -48,7 +58,15 @@ def getDiametersDistances(matrixDistances):
 
 
 def generateDistanceMaps(data, function, dir_path):
-    
+    # Gera um DataFrame onde cada célula contém a lista de distâncias entre o
+    # vetor do objeto (linha) e todos os outros vetores válidos da mesma coluna.
+    # Parâmetros:
+    # - data: DataFrame N x M com cada célula sendo um vetor numpy/lista ou NaN.
+    # - function: string 'euclidean'|'manhattan'|'chebyshev' indicando a métrica.
+    # - dir_path: caminho onde será salvo o arquivo de diâmetros.
+    # Retorna: DataFrame de listas de distâncias (mesmo formato de `data`, mas
+    # cada célula é a lista de distâncias do objeto com os demais).
+
     distanceMatrixValues = pd.DataFrame(index=data.index, columns=data.columns)
 
     #loops (tup x objs) to iterate each object of dataframe
@@ -93,7 +111,13 @@ def generateDistanceMaps(data, function, dir_path):
 
 
 def corDiS(data, correlation , dir_path):
-        
+    # Calcula uma matriz de correlação entre atributos usando as distâncias
+    # (cada entrada da matriz 'data' é uma lista/array de distâncias por tupla).
+    # Para cada par de atributos (i,j) a função coleta coeficientes de
+    # correlação (Pearson ou Spearman) entre vetores correspondentes por linha
+    # e faz a média (por linha) para popular a matriz de correlação.
+    # Salva o resultado em pickle em `dir_path`.
+
     corrMatrix = pd.DataFrame(index = data.columns,columns=data.columns, dtype=float)
         
     for i in range(len(data.columns)):
@@ -117,7 +141,12 @@ def corDiS(data, correlation , dir_path):
 
 
 def normalizeCompatibleAttributes (matrixComp):
-    
+    # Normaliza fatores de compatibilidade em cada linha da tabela de
+    # compatibilidade `matrixComp`. Espera que a coluna 'Fact_attributes'
+    # contenha listas de pesos; essa função divide cada peso pela soma
+    # total e armazena a lista normalizada em 'Fact_norm'. Retorna o DataFrame
+    # atualizado (com 'Fact_norm' convertido de string para lista via literal_eval).
+
     # manipulate each columns(attribute) of patient tuple
     for i in range(len(matrixComp)):
 
@@ -135,6 +164,11 @@ def normalizeCompatibleAttributes (matrixComp):
     return matrixComp
     
 def findCompatibleAttributes(data, matrixCorr, threshold, k_attributes, dir_path, correlation):   
+    # Para cada atributo (linha em matrixCorr) encontra até k_attributes outros
+    # atributos cuja correlação é >= threshold. Gera um DataFrame que mapeia
+    # cada atributo para a lista de atributos compatíveis e seus fatores
+    # (Fact_attributes). Normaliza os fatores e salva o resultado em pickle
+    # dentro de uma subpasta baseada no tipo de correlação.
 
     # Path of output directory
     matrixCompatibleAtr = pd.DataFrame(columns=['Threshold','K_Value','Comp_attributes','Fact_attributes'])
@@ -222,12 +256,12 @@ def main(argv):
             correlation = argv[4]
 
         if(argv[5] is not None):
-            threshold = float(argv[5]
+            threshold = float(argv[5])
                           
         if(argv[6] is not None):
-            max_knn = int(argv[6]
+            max_knn = int(argv[6])
         
-        processingSOLID(input_path, output_path, distance_function, correlation, max_knn)
+        processingSOLID(input_path, output_path, distance_function, correlation, max_knn) # type: ignore
 
     else:
         print('Parameters Not Found!...')

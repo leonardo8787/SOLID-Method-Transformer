@@ -31,12 +31,17 @@ import matplotlib.pyplot as plt
 from Submodules import Functions
 
 def any_nans(a):
+    # Verifica se algum elemento do iterável `a` (cada elemento é esperado ser
+    # um vetor numpy/lista) contém NaNs. Retorna True caso algum possua NaNs.
+    # Útil para decidir se um atributo/coluna possui valores faltantes.
     for x in a:
         if np.isnan(x).any(): 
             return True
     return False
 
 def compare(item1, item2):
+    # Função de comparação padrão que retorna -1/0/1. Útil para compatibilidade
+    # com APIs que aceitam uma função de comparação (cmp_to_key).
     if item1 < item2:
         return -1
     elif item1 > item2:
@@ -45,9 +50,10 @@ def compare(item1, item2):
         return 0
 
 def jaccard_similarity(list1, list2):
+    # Calcula a similaridade de Jaccard entre duas listas (|A ∩ B| / |A ∪ B|).
+    # Útil para medir sobreposição entre conjuntos de índices/atributos.
     intersection = len(list(set(list1).intersection(list2)))
     union = (len(list1) + len(list2)) - intersection
-    
     return float(intersection) / union
 
 
@@ -55,6 +61,12 @@ def jaccard_similarity(list1, list2):
 
 
 def Test_SOLID_Queries(matrixAttributesMissing, matrixComp, diameters, k, id_objQuery):
+    # Função de teste que executa uma consulta SOLID ponderada (Similarity_Queries_Weight)
+    # usando um `matrixAttributesMissing` (dataset com valores faltantes) e o id
+    # do objeto-consulta. Retorna o conjunto de resultados ponderados (IDs dos
+    # vizinhos mais próximos). Observação: espera que `matrixAttributesComplete`
+    # esteja disponível no escopo superior se necessário (ainda que aqui não seja
+    # usado ativamente para a consulta em si).
     result_Weight = []
 
     objQuery = matrixAttributesComplete.loc[id_objQuery]
@@ -72,6 +84,10 @@ def Test_SOLID_Queries(matrixAttributesMissing, matrixComp, diameters, k, id_obj
 
 
 def Test_ObjQueryMissing(matrixAttributesComplete, missing,matrixComp, diameters, k, id_objQuery):
+    # Gera uma versão do objeto-consulta com valores faltantes (percentual `missing`)
+    # a partir de um objeto completo e executa a consulta SOLID para verificar o
+    # comportamento do sistema diante de atributos ausentes. Retorna os vizinhos
+    # mais próximos encontrados.
     result_Weight = []
 
     objQuery = matrixAttributesComplete.loc[id_objQuery]
@@ -107,6 +123,12 @@ def main(argv):
     k = 0
     objQuery = 0
     
+    # Função main que serve como interface de linha de comando. Lê argumentos
+    # (input_path, output_path, k, objQuery) e tenta carregar os pickles
+    # necessários para executar uma consulta SOLID. Observação: atualmente o
+    # código espera os três pickles no mesmo caminho e chama uma função
+    # `SOLID(...)` que não está definida aqui — portanto é necessário ajustar os
+    # nomes dos arquivos e o fluxo para uso direto.
     if(len(argv) == 5):
         if(argv[1] is not ''):
             input_path = argv[1]
